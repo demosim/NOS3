@@ -15,7 +15,7 @@
       - unattended-upgrades
     state: present
 
-- name: Enable UFW and allow SSH and HTTPS
+- name: Enable UFW and allow SSH and HTTPS.
   ufw:
     rule: allow
     port: "{{ item }}"
