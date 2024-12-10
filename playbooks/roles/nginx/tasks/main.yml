@@ -6,7 +6,7 @@
     name: nginx
     state: present
 
-- name: Generate SSL certificate using Let's Encrypt
+- name: Generate SSL certificate using Let's Encrypt.
   command: certbot --nginx -d "{{ domain_name }}"
   args:
     creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
