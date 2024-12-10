@@ -1,0 +1,27 @@
+---
+# tasks file for roles/nginx
+####
+- name: Install NGINX
+  apt:
+    name: nginx
+    state: present
+
+- name: Generate SSL certificate using Let's Encrypt
+  command: certbot --nginx -d "{{ domain_name }}"
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+
+- name: Copy secure NGINX configuration
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/myapp
+  notify:
+    - Reload NGINX
+
+- name: Enable NGINX site
+  file:
+    src: /etc/nginx/sites-available/myapp
+    dest: /etc/nginx/sites-enabled/myapp
+    state: link
+  notify:
+    - Reload NGINX

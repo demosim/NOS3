@@ -1,0 +1,55 @@
+---
+# tasks file for roles/security
+###
+# tasks/main.yml
+- name: Update and upgrade system packages
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Install essential security packages
+  apt:
+    name:
+      - ufw
+      - fail2ban
+      - unattended-upgrades
+    state: present
+
+- name: Enable UFW and allow SSH and HTTPS
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - "2222"  # Adjust SSH port
+    - "443"
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+
+- name: Configure Fail2Ban
+  copy:
+    src: jail.local
+    dest: /etc/fail2ban/jail.local
+  notify:
+    - Restart Fail2Ban
+
+- name: Enable unattended upgrades
+  apt:
+    name: unattended-upgrades
+    state: latest
+  notify:
+    - Restart unattended-upgrades
+
+- name: Harden SSH configuration
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin no' }
+    - { regexp: '^#?Port', line: 'Port 2222' }
+  notify:
+    - Restart SSH

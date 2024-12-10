@@ -1,0 +1,4 @@
+*.retry
+*.log
+*.pem
+inventories/*/hosts  # Exclude production inventory if it has sensitive data

@@ -1,0 +1,12 @@
+[Unit]
+Description=Testukas
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/myapp
+ExecStart=/usr/bin/python3 /var/www/myapp/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

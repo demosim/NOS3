@@ -1,0 +1,64 @@
+---
+# tasks file for roles/app
+# tasks/main.yml
+- name: Install Python, Node.js and npm dependencies
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - nodejs
+      - npm
+    state: present
+
+- name: Install Flask and requests
+  pip:
+    name:
+      - flask
+      - requests
+
+- name: Install Express globally
+  npm:
+    name: express
+    global: yes
+
+- name: Install Axios globally
+  npm:
+    name: axios
+    global: yes
+
+- name: Deploy application code
+  copy:
+    src: files/app.py
+    dest: /var/www/myapp/app.py
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Ensure templates directory exists
+  file:
+    path: /var/www/myapp/templates
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Deploy HTML template
+  copy:
+    src: files/index.html
+    dest: /var/www/myapp/templates/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Create systemd service for the app
+  template:
+    src: templates/myapp.service.j2
+    dest: /etc/systemd/system/myapp.service
+  notify:
+    - Restart app service
+
+- name: Enable and start app service
+  systemd:
+    name: myapp
+    enabled: yes
+    state: started

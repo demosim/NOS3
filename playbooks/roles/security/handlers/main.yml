@@ -1,0 +1,16 @@
+---
+# handlers file for roles/security
+- name: Restart Fail2Ban
+  service:
+    name: fail2ban
+    state: restarted
+
+- name: Restart SSH
+  service:
+    name: sshd
+    state: restarted
+
+- name: Restart unattended-upgrades
+  service:
+    name: unattended-upgrades
+    state: restarted
