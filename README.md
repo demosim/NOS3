@@ -3,6 +3,10 @@ This project automates the setup of a Debian 11 server with the following:
 - Server hardening
 - NGINX setup and SSL configuration
 - Deployment of a Flask web app
+## Prerequisites
+- Local acount with sudo rights
+- Ansible installed
+- Git installed
 
 ## Usage
 1. Clone the repository:
